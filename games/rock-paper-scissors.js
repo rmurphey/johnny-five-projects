@@ -1,4 +1,4 @@
-var five = require("../lib/johnny-five.js");
+var five = require("johnny-five");
 
 var board = new five.Board();
 
@@ -31,7 +31,7 @@ board.on("ready", function() {
 
   choices.forEach(function( buttonName ) {
     var button = buttons[ buttonName ];
-    button.on( "down", function() {
+    button.on( "up", function() {
       turn( buttonName );
     });
   });
@@ -49,27 +49,27 @@ board.on("ready", function() {
     };
 
     isGameOver = false;
-
-    gameOverLED.off();
-    lcd.clear();
   }
 
   function turn( player ) {
     if ( waiting ) { return; }
 
+    gameOverLED.off();
     waiting = true;
 
     var computer = computerChoice();
 
-    points[ playerIsWinner( player, computer ) ? "player" : "computer" ]++;
+    if ( player !== computer ) {
+      points[ playerIsWinner( player, computer ) ? "player" : "computer" ]++;
+    }
+
     updateScoreboard( player, computer );
 
-    process.nextTick(function() {
-      waiting = false;
-      if ( points.player > 3 || points.computer > 3 ) {
-        gameOver();
-      }
-    });
+    waiting = false;
+
+    if ( points.player > 3 || points.computer > 3 ) {
+      gameOver();
+    }
   }
 
   function playerIsWinner( playerChoice, computerChoice ) {
@@ -86,7 +86,22 @@ board.on("ready", function() {
   }
 
   function gameOver() {
+    lcd.clear();
+
+    lcd.print(
+      points.computer > points.player ?
+      'ROBOT WINS' :
+      'HUMAN WINS'
+    );
+
     gameOverLED.on();
+
     reset();
   }
+
+  board.repl.inject({
+    buttons: buttons,
+    lcd: lcd,
+    gameOverLED: gameOverLED
+  })
 });
