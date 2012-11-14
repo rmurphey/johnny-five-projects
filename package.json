@@ -1,0 +1,14 @@
+{
+  "name": "johnny-five-projects",
+  "version": "0.1.0",
+  "description": "Johnny Five Demo Projects",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/rmurphey/johnny-five-projects.git"
+  },
+  "author": "Rebecca Murphey",
+  "license": "MIT/BSD",
+  "dependencies": {
+    "johnny-five": "~0.5.14"
+  }
+}
