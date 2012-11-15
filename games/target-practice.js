@@ -13,7 +13,7 @@ board.on("ready", function() {
   var range = new five.Sensor( "A0" );
 
   var servoPosition = 0;
-  var range;
+  var dist;
 
   servo.move( servoPosition );
 
@@ -23,13 +23,13 @@ board.on("ready", function() {
   });
 
   range.on( "read", function() {
-    range = Math.floor( this.normalized * 100 ) / 100;
+    dist = Math.floor( this.normalized * 100 ) / 100;
   });
 
 
   function updateScreen() {
     lcd.clear();
-    lcd.print( "RANGE: " + range );
+    lcd.print( "RANGE: " + dist );
     lcd.setCursor( 0, 1 );
     lcd.print( "ANGLE: " + servoPosition );
 
