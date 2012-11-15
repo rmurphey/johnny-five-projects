@@ -10,18 +10,31 @@ board.on("ready", function() {
   });
 
   var pot = new five.Sensor( "A1" ).scale( 0, 180 );
-  var range = new five.Sensor({
-    pin: "A0",
-    freq: 1000
-  });
+  var range = new five.Sensor( "A0" );
+
+  var servoPosition = 0;
+  var range;
+
+  servo.move( servoPosition );
 
   pot.on("slide", function() {
-    servo.move( Math.round(this.value) );
+    servoPosition = Math.round( this.value );
+    servo.move( servoPosition );
   });
 
   range.on( "read", function() {
-    lcd.clear();
-    lcd.print( "RANGE: " + Math.floor( this.normalized * 100 ) / 100 );
+    range = Math.floor( this.normalized * 100 ) / 100;
   });
 
+
+  function updateScreen() {
+    lcd.clear();
+    lcd.print( "RANGE: " + range );
+    lcd.setCursor( 0, 1 );
+    lcd.print( "ANGLE: " + servoPosition );
+
+    setTimeout( updateScreen, 2000 );
+  }
+
+  updateScreen();
 });
